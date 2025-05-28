@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "smolagent-tuto"
+version = "0.1.0"
+description = "Agent tutorial"
+authors = ["Adrien <ruaultadrien@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10"
+smolagents = "^1.17.0"
+duckduckgo-search = "^8.0.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
