@@ -9,6 +9,7 @@ readme = "README.md"
 python = ">=3.10"
 smolagents = "^1.17.0"
 duckduckgo-search = "^8.0.2"
+gradio = "^5.31.0"
 
 
 [build-system]

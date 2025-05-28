@@ -28,16 +28,22 @@ def suggest_menu(occasion: str) -> str:
         return "Custom menu for the butler."
 
 
-def main():
-    print("Enter application")
-    # Assuming HUGGINGFACE_TOKEN is already set in the environment
-    login(token=os.environ["HF_TOKEN"])
-
+def get_agent() -> CodeAgent:
+    """Returns the tuto agent."""
     agent = CodeAgent(
         tools=[DuckDuckGoSearchTool(), suggest_menu],
         model=InferenceClientModel(),
         additional_authorized_imports=["datetime"],
     )
+    return agent
+
+
+def main():
+    print("Enter application")
+    # Assuming HUGGINGFACE_TOKEN is already set in the environment
+    login(token=os.environ["HF_TOKEN"])
+
+    agent = get_agent()
 
     # Pushing to hub
     agent.push_to_hub("ruaultadrienperso/AlfredAgent")
