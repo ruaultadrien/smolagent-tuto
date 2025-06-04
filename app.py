@@ -4,11 +4,12 @@ import os
 import gradio as gr
 
 from smolagents import CodeAgent, LiteLLMModel
-from utils import get_agent
+from utils import get_agent, setup_langfuse
 
 
 def call_agent(prompt: str) -> str:
     """Get the agent and call it with the prompt."""
+    setup_langfuse()
 
     model = LiteLLMModel(
         model_id="mistral/mistral-small-latest",
