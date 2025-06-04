@@ -49,7 +49,7 @@ def main():
     agent.push_to_hub("ruaultadrienperso/AlfredAgent")
 
     # Pulling from hub
-    agent = agent.pull_from_hub("ruaultadrienperso/AlfredAgent")
+    agent = CodeAgent.from_hub("ruaultadrienperso/AlfredAgent", trust_remote_code=True)
 
     prep_time_res = agent.run("""
     Alfred needs to prepare for the party. Here are the tasks:
