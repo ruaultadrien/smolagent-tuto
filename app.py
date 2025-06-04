@@ -3,6 +3,7 @@
 import os
 import gradio as gr
 
+from huggingface_hub import login
 from smolagents import CodeAgent, LiteLLMModel
 from utils import get_agent, setup_langfuse
 
@@ -10,6 +11,9 @@ from utils import get_agent, setup_langfuse
 def call_agent(prompt: str) -> str:
     """Get the agent and call it with the prompt."""
     setup_langfuse()
+
+    # Login to Hugging Face Hub
+    login(token=os.getenv("HF_TOKEN"))
 
     model = LiteLLMModel(
         model_id="mistral/mistral-small-latest",

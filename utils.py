@@ -4,10 +4,10 @@ import base64
 import os
 from smolagents import CodeAgent, DuckDuckGoSearchTool, tool, Model
 from opentelemetry.sdk.trace import TracerProvider
-
-from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
+
+from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 
 
 # Tool to list the available occasions
