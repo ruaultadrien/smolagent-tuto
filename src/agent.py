@@ -8,24 +8,27 @@ from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
-from smolagents import CodeAgent, DuckDuckGoSearchTool, Model, ToolCallingAgent
+from smolagents import (
+    CodeAgent,
+    Model,
+    ToolCallingAgent,
+)
 
-from src.tools import list_occasions, suggest_menu
 
-
-def get_agent(model: Model, code_agent: bool) -> CodeAgent:
+def get_agent(model: Model, tools: list, code_agent: bool) -> CodeAgent:
     """Returns the tuto agent."""
     if code_agent:
         logging.info("Creating code agent")
         agent = CodeAgent(
-            tools=[DuckDuckGoSearchTool(), suggest_menu, list_occasions],
+            tools=tools,
             model=model,
             additional_authorized_imports=["datetime"],
+            add_base_tools=True,
         )
     else:
         logging.info("Creating tool calling agent")
         agent = ToolCallingAgent(
-            tools=[DuckDuckGoSearchTool(), suggest_menu, list_occasions],
+            tools=tools,
             model=model,
         )
     return agent
