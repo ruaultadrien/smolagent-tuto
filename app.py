@@ -1,11 +1,18 @@
 """Define the Gradio interface for the agent."""
 
+import logging
 import os
-import gradio as gr
 
+import gradio as gr
 from huggingface_hub import login
 from smolagents import CodeAgent, LiteLLMModel
-from utils import get_agent, setup_langfuse
+
+from src.utils import get_agent, setup_langfuse
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
 
 
 def call_agent(prompt: str) -> str:
@@ -19,7 +26,7 @@ def call_agent(prompt: str) -> str:
         model_id="mistral/mistral-small-latest",
         api_key=os.getenv("MISTRAL_API_KEY"),
     )
-    agent = get_agent(model=model)
+    agent = get_agent(model=model, code_agent=False)
 
     # Pushing to hub
     agent.push_to_hub("ruaultadrienperso/AlfredAgent")
@@ -31,4 +38,4 @@ def call_agent(prompt: str) -> str:
 
 
 app = gr.Interface(fn=call_agent, inputs="text", outputs="text")
-app.launch()
+app.launch(share=False)
