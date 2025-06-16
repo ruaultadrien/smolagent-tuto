@@ -5,7 +5,7 @@ import os
 
 import gradio as gr
 from huggingface_hub import login
-from smolagents import CodeAgent, LiteLLMModel
+from smolagents import LiteLLMModel
 
 from src.utils import get_agent, setup_langfuse
 
@@ -26,13 +26,7 @@ def call_agent(prompt: str) -> str:
         model_id="mistral/mistral-small-latest",
         api_key=os.getenv("MISTRAL_API_KEY"),
     )
-    agent = get_agent(model=model, code_agent=False)
-
-    # Pushing to hub
-    agent.push_to_hub("ruaultadrienperso/AlfredAgent")
-
-    # Pulling from hub
-    agent = CodeAgent.from_hub("ruaultadrienperso/AlfredAgent", trust_remote_code=True)
+    agent = get_agent(model=model, code_agent=True)
 
     return agent.run(prompt)
 
