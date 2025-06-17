@@ -6,17 +6,17 @@ import os
 import gradio as gr
 from huggingface_hub import login
 from mcp import StdioServerParameters
-from smolagents import DuckDuckGoSearchTool, LiteLLMModel, ToolCollection
+from smolagents import LiteLLMModel, ToolCollection
 
 from src.agent import get_agent, setup_langfuse
-from src.tools import (
-    SuperheroPartyThemeTool,
-    catering_service_tool,
-    get_image_generation_tool,
-    get_langchain_tool,
-    list_occasions,
-    suggest_menu,
-)
+# from src.tools import (
+#     SuperheroPartyThemeTool,
+#     catering_service_tool,
+#     get_image_generation_tool,
+#     get_langchain_serpapi_tool,
+#     list_occasions,
+#     suggest_menu,
+# )
 
 # Configure logging
 logging.basicConfig(
@@ -49,17 +49,20 @@ def call_agent(prompt: str) -> tuple[str, str]:
             tool.name = f"mcp_{tool.name}"
 
         tools = [
-            DuckDuckGoSearchTool(),
-            suggest_menu,
-            list_occasions,
-            catering_service_tool,
-            SuperheroPartyThemeTool(),
-            get_image_generation_tool(),
-            get_langchain_tool(),
-            *tool_collection.tools,
+            # DuckDuckGoSearchTool(),
+            # suggest_menu,
+            # list_occasions,
+            # catering_service_tool,
+            # SuperheroPartyThemeTool(),
+            # get_image_generation_tool(),
+            # get_langchain_serpapi_tool(),
+            # *mcp_tools,
         ]
-        logging.info(f"Available tools: {tools}")
         agent = get_agent(model=model, tools=tools, code_agent=True)
+
+        logging.info(
+            f"Agent's available tools: {[tool_name for tool_name in agent.tools.keys()]}"
+        )
 
         res = agent.run(prompt)
 

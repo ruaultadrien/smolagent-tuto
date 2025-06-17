@@ -105,7 +105,7 @@ class SuperheroPartyThemeTool(Tool):
 #     return load_tool("m-ric/text-to-image", trust_remote_code=True)
 
 
-def get_langchain_tool() -> Callable:
+def get_langchain_serpapi_tool() -> Callable:
     serpapi_search_tool = Tool.from_langchain(load_tools(["serpapi"])[0])
     serpapi_search_tool.name = "serpapi_search_tool"
     return serpapi_search_tool
