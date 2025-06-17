@@ -1,28 +1,46 @@
+"""Documents for the party planning agent."""
+
 from langchain.docstore.document import Document
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 
 
-def get_documents():
+def get_documents() -> list[Document]:
+    """Get the documents for the party planning agent."""
     # Simulate a knowledge base about party planning
     party_ideas = [
         {
-            "text": "A superhero-themed masquerade ball with luxury decor, including gold accents and velvet curtains.",
+            "text": (
+                "A superhero-themed masquerade ball with luxury decor, "
+                "including gold accents and velvet curtains."
+            ),
             "source": "Party Ideas 1",
         },
         {
-            "text": "Hire a professional DJ who can play themed music for superheroes like Batman and Wonder Woman.",
+            "text": (
+                "Hire a professional DJ who can play themed music for superheroes "
+                "like Batman and Wonder Woman."
+            ),
             "source": "Entertainment Ideas",
         },
         {
-            "text": "For catering, serve dishes named after superheroes, like 'The Hulk's Green Smoothie' and 'Iron Man's Power Steak.'",
+            "text": (
+                "For catering, serve dishes named after superheroes, like "
+                "'The Hulk's Green Smoothie' and 'Iron Man's Power Steak.'"
+            ),
             "source": "Catering Ideas",
         },
         {
-            "text": "Decorate with iconic superhero logos and projections of Gotham and other superhero cities around the venue.",
+            "text": (
+                "Decorate with iconic superhero logos and projections of Gotham "
+                "and other superhero cities around the venue."
+            ),
             "source": "Decoration Ideas",
         },
         {
-            "text": "Interactive experiences with VR where guests can engage in superhero simulations or compete in themed games.",
+            "text": (
+                "Interactive experiences with VR where guests can engage in "
+                "superhero simulations or compete in themed games."
+            ),
             "source": "Entertainment Ideas",
         },
     ]

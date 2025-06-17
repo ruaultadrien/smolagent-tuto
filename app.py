@@ -1,16 +1,16 @@
 """Define the Gradio interface for the agent."""
 
-import logging
 import os
 
 import gradio as gr
 from huggingface_hub import login
-from mcp import StdioServerParameters
-from smolagents import LiteLLMModel, ToolCollection
+from smolagents import CodeAgent, LiteLLMModel, ToolCollection
 
-from src.agent import get_agent, setup_langfuse
-from src.tools import get_party_planner_retriever_tool
+from mcp import StdioServerParameters
+from src.agent import setup_langfuse
+from src.logger import logger
 from src.mcp import process_mcp_tools
+from src.tools import get_party_planner_retriever_tool
 
 # from src.tools import (
 #     SuperheroPartyThemeTool,
@@ -19,12 +19,7 @@ from src.mcp import process_mcp_tools
 #     get_langchain_serpapi_tool,
 #     list_occasions,
 #     suggest_menu,
-# )
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# )  # noqa: ERA001, RUF100
 
 
 def call_agent(prompt: str) -> tuple[str, str]:
@@ -44,7 +39,8 @@ def call_agent(prompt: str) -> tuple[str, str]:
         env={"UV_PYTHON": "3.11", **os.environ},
     )
     with ToolCollection.from_mcp(
-        server_parameters, trust_remote_code=True
+        server_parameters,
+        trust_remote_code=True,
     ) as tool_collection:
         mcp_tools = process_mcp_tools(tool_collection)
 
@@ -54,22 +50,18 @@ def call_agent(prompt: str) -> tuple[str, str]:
             # suggest_menu,
             # list_occasions,
             # catering_service_tool,
-            # SuperheroPartyThemeTool(),
-            # get_image_generation_tool(),
-            # get_langchain_serpapi_tool(),
+            # SuperheroPartyThemeTool(),  # noqa: ERA001
+            # get_image_generation_tool(),  # noqa: ERA001
+            # get_langchain_serpapi_tool(),  # noqa: ERA001
             *mcp_tools,
         ]
-        agent = get_agent(
-            model=model, tools=tools, add_base_tools=True, code_agent=True
+        agent = CodeAgent(tools=tools, model=model, add_base_tools=True)
+
+        logger.info(
+            f"Agent's available tools: {list(agent.tools.keys())}",
         )
 
-        logging.info(
-            f"Agent's available tools: {[tool_name for tool_name in agent.tools.keys()]}"
-        )
-
-        res = agent.run(prompt)
-
-    return res
+        return agent.run(prompt)
 
 
 app = gr.Interface(fn=call_agent, inputs="text", outputs="text")

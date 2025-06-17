@@ -1,46 +1,18 @@
 """Sandbox for using the smolagents library."""
 
 import base64
-import logging
 import os
 
 from openinference.instrumentation.smolagents import SmolagentsInstrumentor
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import SimpleSpanProcessor
-from smolagents import (
-    CodeAgent,
-    Model,
-    ToolCallingAgent,
-)
 
 
-def get_agent(
-    model: Model, tools: list, add_base_tools: bool, code_agent: bool
-) -> CodeAgent:
-    """Returns the tuto agent."""
-    if code_agent:
-        logging.info("Creating code agent")
-        agent = CodeAgent(
-            tools=tools,
-            model=model,
-            additional_authorized_imports=["datetime"],
-            add_base_tools=add_base_tools,
-        )
-    else:
-        logging.info("Creating tool calling agent")
-        agent = ToolCallingAgent(
-            tools=tools,
-            model=model,
-            add_base_tools=add_base_tools,
-        )
-    return agent
-
-
-def setup_langfuse():
-    """Setup Langfuse."""
+def setup_langfuse() -> None:
+    """Setups Langfuse."""
     langfuse_auth = base64.b64encode(
-        f"{os.getenv('LANGFUSE_PUBLIC_KEY')}:{os.getenv('LANGFUSE_SECRET_KEY')}".encode()
+        f"{os.getenv('LANGFUSE_PUBLIC_KEY')}:{os.getenv('LANGFUSE_SECRET_KEY')}".encode(),
     ).decode()
 
     os.environ["OTEL_EXPORTER_OTLP_ENDPOINT"] = (
