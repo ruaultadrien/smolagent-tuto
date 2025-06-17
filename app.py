@@ -49,7 +49,6 @@ def call_agent(prompt: str) -> tuple[str, str]:
             tool.name = f"mcp_{tool.name}"
 
         tools = [
-            # DuckDuckGoSearchTool(),
             # suggest_menu,
             # list_occasions,
             # catering_service_tool,
@@ -58,7 +57,9 @@ def call_agent(prompt: str) -> tuple[str, str]:
             # get_langchain_serpapi_tool(),
             # *mcp_tools,
         ]
-        agent = get_agent(model=model, tools=tools, code_agent=True)
+        agent = get_agent(
+            model=model, tools=tools, add_base_tools=True, code_agent=True
+        )
 
         logging.info(
             f"Agent's available tools: {[tool_name for tool_name in agent.tools.keys()]}"

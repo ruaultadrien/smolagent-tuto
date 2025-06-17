@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
-smolagents = {extras = ["litellm", "mcp"], version = "^1.18.0"}
+smolagents = {extras = ["litellm", "mcp", "toolkit"], version = "^1.18.0"}
 duckduckgo-search = "^8.0.2"
 gradio = "^5.31.0"
 opentelemetry-sdk = "^1.33.1"

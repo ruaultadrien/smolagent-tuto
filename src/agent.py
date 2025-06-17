@@ -15,7 +15,9 @@ from smolagents import (
 )
 
 
-def get_agent(model: Model, tools: list, code_agent: bool) -> CodeAgent:
+def get_agent(
+    model: Model, tools: list, add_base_tools: bool, code_agent: bool
+) -> CodeAgent:
     """Returns the tuto agent."""
     if code_agent:
         logging.info("Creating code agent")
@@ -23,13 +25,14 @@ def get_agent(model: Model, tools: list, code_agent: bool) -> CodeAgent:
             tools=tools,
             model=model,
             additional_authorized_imports=["datetime"],
-            add_base_tools=True,
+            add_base_tools=add_base_tools,
         )
     else:
         logging.info("Creating tool calling agent")
         agent = ToolCallingAgent(
             tools=tools,
             model=model,
+            add_base_tools=add_base_tools,
         )
     return agent
 
