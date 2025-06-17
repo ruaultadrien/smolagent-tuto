@@ -9,6 +9,9 @@ from mcp import StdioServerParameters
 from smolagents import LiteLLMModel, ToolCollection
 
 from src.agent import get_agent, setup_langfuse
+from src.tools import get_party_planner_retriever_tool
+from src.mcp import process_mcp_tools
+
 # from src.tools import (
 #     SuperheroPartyThemeTool,
 #     catering_service_tool,
@@ -32,7 +35,7 @@ def call_agent(prompt: str) -> tuple[str, str]:
     login(token=os.getenv("HF_TOKEN"))
 
     model = LiteLLMModel(
-        model_id="mistral/mistral-small-latest",
+        model_id="mistral/mistral-medium-latest",
         api_key=os.getenv("MISTRAL_API_KEY"),
     )
     server_parameters = StdioServerParameters(
@@ -43,19 +46,18 @@ def call_agent(prompt: str) -> tuple[str, str]:
     with ToolCollection.from_mcp(
         server_parameters, trust_remote_code=True
     ) as tool_collection:
-        mcp_tool_collection: ToolCollection = tool_collection
-        mcp_tools = mcp_tool_collection.tools
-        for tool in mcp_tools:
-            tool.name = f"mcp_{tool.name}"
+        mcp_tools = process_mcp_tools(tool_collection)
 
+        party_planning_retriever_tool = get_party_planner_retriever_tool()
         tools = [
+            party_planning_retriever_tool,
             # suggest_menu,
             # list_occasions,
             # catering_service_tool,
             # SuperheroPartyThemeTool(),
             # get_image_generation_tool(),
             # get_langchain_serpapi_tool(),
-            # *mcp_tools,
+            *mcp_tools,
         ]
         agent = get_agent(
             model=model, tools=tools, add_base_tools=True, code_agent=True

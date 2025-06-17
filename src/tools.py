@@ -2,8 +2,12 @@
 
 from typing import Callable
 
+from langchain_community.retrievers import BM25Retriever
+
 from langchain_community.agent_toolkits.load_tools import load_tools
 from smolagents import Tool, tool
+
+from src.documents import get_documents
 
 
 # Tool to list the available occasions
@@ -118,3 +122,40 @@ def get_image_generation_tool() -> Callable:
         description="Generate an image from a prompt",
     )
     return image_generation_tool
+
+
+class PartyPlanningRetrieverTool(Tool):
+    name = "party_planning_retriever"
+    description = "Uses semantic search to retrieve relevant party planning ideas for Alfred’s superhero-themed party at Wayne Manor."
+    inputs = {
+        "query": {
+            "type": "string",
+            "description": "The query to perform. This should be a query related to party planning or superhero themes.",
+        }
+    }
+    output_type = "string"
+
+    def __init__(self, docs, **kwargs):
+        super().__init__(**kwargs)
+        self.retriever = BM25Retriever.from_documents(
+            docs,
+            k=5,  # Retrieve the top 5 documents
+        )
+
+    def forward(self, query: str) -> str:
+        assert isinstance(query, str), "Your search query must be a string"
+
+        docs = self.retriever.invoke(
+            query,
+        )
+        return "\nRetrieved ideas:\n" + "".join(
+            [
+                f"\n\n===== Idea {str(i)} =====\n" + doc.page_content
+                for i, doc in enumerate(docs)
+            ]
+        )
+
+
+def get_party_planner_retriever_tool():
+    docs_processed = get_documents()
+    return PartyPlanningRetrieverTool(docs_processed)
