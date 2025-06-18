@@ -7,9 +7,8 @@ repos:
           verbose: true
     
 
-    - repo: local
+    - repo: https://github.com/astral-sh/ruff-pre-commit
+      rev: v0.4.4
       hooks:
         - id: ruff
-          name: Ruff
-          entry: bash -c "ruff check"
-          language: system
+        - id: ruff-format
