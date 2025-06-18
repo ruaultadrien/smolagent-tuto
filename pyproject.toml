@@ -12,6 +12,7 @@ version = "0.1.0"
 description = "Agent tutorial"
 authors = ["Adrien <ruaultadrien@gmail.com>"]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
@@ -21,7 +22,7 @@ gradio = "^5.31.0"
 opentelemetry-sdk = "^1.33.1"
 opentelemetry-exporter-otlp = "^1.33.1"
 openinference-instrumentation-smolagents = "^0.1.12"
-ruff = "^0.11.13"
+ruff = "^0.12.0"
 langchain = "^0.3.25"
 langchain-community = "^0.3.25"
 google-search-results = "^2.4.2"
