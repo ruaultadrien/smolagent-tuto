@@ -4,7 +4,6 @@ import math
 from collections.abc import Callable
 from typing import ClassVar
 
-from langchain.docstore.document import Document
 from langchain_community.agent_toolkits.load_tools import load_tools
 from langchain_community.retrievers import BM25Retriever
 from smolagents import Tool, tool
@@ -143,9 +142,10 @@ class PartyPlanningRetrieverTool(Tool):
     }
     output_type = "string"
 
-    def __init__(self, docs: list[Document], **kwargs) -> None:  # noqa: ANN003
+    def __init__(self, **kwargs) -> None:  # noqa: ANN003
         """Initialize the retriever tool."""
         super().__init__(**kwargs)
+        docs = get_documents()
         self.retriever = BM25Retriever.from_documents(
             docs,
             k=5,  # Retrieve the top 5 documents
@@ -162,12 +162,6 @@ class PartyPlanningRetrieverTool(Tool):
                 for i, doc in enumerate(docs)
             ],
         )
-
-
-def get_party_planner_retriever_tool() -> callable:
-    """Return a tool that retrieves relevant party planning ideas for Alfred's party."""
-    docs_processed = get_documents()
-    return PartyPlanningRetrieverTool(docs_processed)
 
 
 @tool
