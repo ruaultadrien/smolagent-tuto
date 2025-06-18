@@ -6,26 +6,15 @@ import gradio as gr
 from huggingface_hub import login
 from smolagents import (
     CodeAgent,
-    GoogleSearchTool,
-    LiteLLMModel,
     ToolCollection,
-    VisitWebpageTool,
 )
 
 from mcp import StdioServerParameters
-from src.agent import setup_langfuse
-from src.logger import logger
+from src.agents import get_web_agent
+from src.logger import logger, setup_langfuse
 from src.mcp import process_mcp_tools
+from src.models import get_model
 from src.tools import calculate_cargo_travel_time
-
-# from src.tools import (
-#     SuperheroPartyThemeTool,
-#     catering_service_tool,
-#     get_image_generation_tool,
-#     get_langchain_serpapi_tool,
-#     list_occasions,
-#     suggest_menu,
-# )  # noqa: ERA001, RUF100
 
 
 def call_agent(task: str) -> tuple[str, str]:
@@ -35,10 +24,6 @@ def call_agent(task: str) -> tuple[str, str]:
     # Login to Hugging Face Hub
     login(token=os.getenv("HF_TOKEN"))
 
-    model = LiteLLMModel(
-        model_id="mistral/mistral-medium-latest",
-        api_key=os.getenv("MISTRAL_API_KEY"),
-    )
     server_parameters = StdioServerParameters(
         command="uvx",
         args=["--quiet", "pubmedmcp@0.1.3"],
@@ -49,25 +34,22 @@ def call_agent(task: str) -> tuple[str, str]:
         trust_remote_code=True,
     ) as tool_collection:
         mcp_tools = process_mcp_tools(tool_collection)
-
-        tools = [
-            calculate_cargo_travel_time,
-            GoogleSearchTool("serper"),
-            VisitWebpageTool(),
-            *mcp_tools,
-            # party_planning_retriever_tool,
-            # suggest_menu,
-            # list_occasions,
-            # catering_service_tool,
-            # SuperheroPartyThemeTool(),  # noqa: ERA001
-            # get_image_generation_tool(),  # noqa: ERA001
-            # get_langchain_serpapi_tool(),  # noqa: ERA001
-        ]
+        model = get_model("mistral")
         agent = CodeAgent(
-            tools=tools,
+            tools=[calculate_cargo_travel_time, *mcp_tools],
             model=model,
+            managed_agents=[get_web_agent(model)],
             add_base_tools=False,
-            additional_authorized_imports=["pandas"],
+            additional_authorized_imports=[
+                "geopandas",
+                "plotly",
+                "shapely",
+                "json",
+                "pandas",
+                "numpy",
+            ],
+            planning_interval=5,
+            verbosity_level=2,
             max_steps=20,
         )
 
