@@ -447,9 +447,9 @@ googleapis-common-protos==1.70.0 ; python_version >= "3.10" and python_version <
 gradio-client==1.10.3 ; python_version >= "3.10" and python_version < "3.14" \
     --hash=sha256:941e7f8d9a160f88487e9780a3db2736a40ea2b8b69d53ffdb306e47ef658b76 \
     --hash=sha256:9e99b88e47f05dc3b68e40a3f3f83819f8d0ddcd43466ad385fe42e137825774
-gradio==5.34.0 ; python_version >= "3.10" and python_version < "3.14" \
-    --hash=sha256:7d150fe2c6cf7b4776ef61f318d531cfd653f028029287f3db3470936483b3cf \
-    --hash=sha256:a5eeb9bd2db923fc4b39abceac27886e5e05f20e89c0026bbdd2e2be6d5fbe32
+gradio==5.34.1 ; python_version >= "3.10" and python_version < "3.14" \
+    --hash=sha256:26e3a01b0d3170e0ecc4757a0973aab78d5e1a15110b122c512ada116e137729 \
+    --hash=sha256:399167c0dbf11abcbe6e281575614b105ff4bfaea9491aa2b06de64ffdd553c4
 greenlet==3.2.3 ; python_version < "3.14" and (platform_machine == "aarch64" or platform_machine == "ppc64le" or platform_machine == "x86_64" or platform_machine == "amd64" or platform_machine == "AMD64" or platform_machine == "win32" or platform_machine == "WIN32") and python_version >= "3.10" \
     --hash=sha256:003c930e0e074db83559edc8705f3a2d066d4aa8c2f198aff1e454946efd0f26 \
     --hash=sha256:024571bbce5f2c1cfff08bf3fbaa43bbc7444f580ae13b0099e95d0e6e67ed36 \
@@ -701,9 +701,9 @@ langchain==0.3.25 ; python_version >= "3.10" and python_version < "3.14" \
 langsmith==0.3.45 ; python_version >= "3.10" and python_version < "3.14" \
     --hash=sha256:1df3c6820c73ed210b2c7bc5cdb7bfa19ddc9126cd03fdf0da54e2e171e6094d \
     --hash=sha256:5b55f0518601fa65f3bb6b1a3100379a96aa7b3ed5e9380581615ba9c65ed8ed
-litellm==1.72.6 ; python_version >= "3.10" and python_version < "3.14" \
-    --hash=sha256:4e5c7e4273b09b765302d2faaec30f77b42255c0055b427b55ea02b8092b8582 \
-    --hash=sha256:e0ae98d25db4910e78b1a0a604f24c0d6875f6cdea02426b264a45d4fbdb8c46
+litellm==1.72.6.post1 ; python_version >= "3.10" and python_version < "3.14" \
+    --hash=sha256:94abba480b3e1c9f05ed75f908e8fb0d5fe1bd5304868bd435f99fbdfcdb4c88 \
+    --hash=sha256:cc03455bfae17c4226e70bc0e8ac7c889fc577b4832fbb6bc5bd8bc5a2ab02f9
 lxml==5.4.0 ; python_version >= "3.10" and python_version < "3.14" \
     --hash=sha256:00b8686694423ddae324cf614e1b9659c2edb754de617703c3d29ff568448df5 \
     --hash=sha256:073eb6dcdf1f587d9b88c8c93528b57eccda40209cf9be549d469b942b41d70b \
@@ -1142,9 +1142,9 @@ openai==1.88.0 ; python_version >= "3.10" and python_version < "3.14" \
 openinference-instrumentation-smolagents==0.1.13 ; python_version >= "3.10" and python_version < "3.14" \
     --hash=sha256:f63ed427a3e5edd23d7b96b8e64dce0b5ff6f193aa0e26d6efb7a3e2b44507cb \
     --hash=sha256:fa96994dcabcc8a9f0c5dbe00443d21c1eb08d43f21ecce645ff03d52709d9ae
-openinference-instrumentation==0.1.33 ; python_version >= "3.10" and python_version < "3.14" \
-    --hash=sha256:652c98c5bdb4caaa87ac5a73c2446de9e1b4e92c14687dbf67b0974057dfe596 \
-    --hash=sha256:8ed9ae2890f057601e093d98c99967fbe03e37e2788b53122e0cfe829357437f
+openinference-instrumentation==0.1.34 ; python_version >= "3.10" and python_version < "3.14" \
+    --hash=sha256:0fff1cc6d9b86f3450fc1c88347c51c5467855992b75e7addb85bf09fd048d2d \
+    --hash=sha256:fa0328e8b92fc3e22e150c46f108794946ce39fe13670aed15f23ba0105f72ab
 openinference-semantic-conventions==0.1.21 ; python_version >= "3.10" and python_version < "3.14" \
     --hash=sha256:328405b9f79ff72a659c7712b8429c0d7ea68c6a4a1679e3eb44372aa228119b \
     --hash=sha256:acde8282c20da1de900cdc0d6258a793ec3eb8031bfc496bd823dae17d32e326
