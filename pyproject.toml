@@ -16,7 +16,7 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"
-smolagents = {extras = ["litellm", "mcp"], version = "^1.18.0"}
+smolagents = {extras = ["litellm", "mcp", "toolkit"], version = "^1.18.0"}
 duckduckgo-search = "^8.0.2"
 gradio = "^5.31.0"
 opentelemetry-sdk = "^1.33.1"
@@ -26,6 +26,10 @@ ruff = "^0.12.0"
 langchain = "^0.3.25"
 langchain-community = "^0.3.25"
 google-search-results = "^2.4.2"
+mcp = "^1.9.4"
+plotly = "^6.1.2"
+geopandas = "^1.1.0"
+kaleido = "^1.0.0"
 
 
 [tool.poetry.group.dev.dependencies]
