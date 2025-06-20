@@ -43,6 +43,13 @@ def call_agent(task: str) -> tuple[str, str]:
             additional_authorized_imports=[
                 "geopandas",
                 "plotly",
+                "plotly.graph_objects",
+                "plotly.express",
+                "plotly.express.colors",
+                "plotly.express.colors.sequential",
+                "plotly.express.graph_objects",
+                "matplotlib",
+                "matplotlib.pyplot",
                 "shapely",
                 "json",
                 "pandas",
