@@ -3,42 +3,28 @@
 import os
 
 import gradio as gr
+import smolagents
 from huggingface_hub import login
 from smolagents import (
     CodeAgent,
-    GoogleSearchTool,
-    LiteLLMModel,
     ToolCollection,
-    VisitWebpageTool,
 )
 
 from mcp import StdioServerParameters
-from src.agent import setup_langfuse
-from src.logger import logger
+from src.agents import get_web_agent
+from src.logger import logger, setup_langfuse
 from src.mcp import process_mcp_tools
+from src.models import get_model
 from src.tools import calculate_cargo_travel_time
 
-# from src.tools import (
-#     SuperheroPartyThemeTool,
-#     catering_service_tool,
-#     get_image_generation_tool,
-#     get_langchain_serpapi_tool,
-#     list_occasions,
-#     suggest_menu,
-# )  # noqa: ERA001, RUF100
 
-
-def call_agent(task: str) -> tuple[str, str]:
+def call_agent(task: str) -> list[gr.ChatMessage]:
     """Get the agent and call it with the prompt."""
     setup_langfuse()
 
     # Login to Hugging Face Hub
     login(token=os.getenv("HF_TOKEN"))
 
-    model = LiteLLMModel(
-        model_id="mistral/mistral-medium-latest",
-        api_key=os.getenv("MISTRAL_API_KEY"),
-    )
     server_parameters = StdioServerParameters(
         command="uvx",
         args=["--quiet", "pubmedmcp@0.1.3"],
@@ -49,42 +35,73 @@ def call_agent(task: str) -> tuple[str, str]:
         trust_remote_code=True,
     ) as tool_collection:
         mcp_tools = process_mcp_tools(tool_collection)
-
-        tools = [
-            calculate_cargo_travel_time,
-            GoogleSearchTool("serper"),
-            VisitWebpageTool(),
-            *mcp_tools,
-            # party_planning_retriever_tool,
-            # suggest_menu,
-            # list_occasions,
-            # catering_service_tool,
-            # SuperheroPartyThemeTool(),  # noqa: ERA001
-            # get_image_generation_tool(),  # noqa: ERA001
-            # get_langchain_serpapi_tool(),  # noqa: ERA001
-        ]
+        model = get_model("mistral")
         agent = CodeAgent(
-            tools=tools,
+            tools=[calculate_cargo_travel_time, *mcp_tools],
             model=model,
+            managed_agents=[get_web_agent(model)],
             add_base_tools=False,
-            additional_authorized_imports=["pandas"],
+            additional_authorized_imports=[
+                "geopandas",
+                "plotly",
+                "plotly.graph_objects",
+                "plotly.express",
+                "plotly.express.colors",
+                "plotly.express.colors.sequential",
+                "plotly.express.graph_objects",
+                "matplotlib",
+                "matplotlib.pyplot",
+                "shapely",
+                "json",
+                "pandas",
+                "numpy",
+            ],
+            planning_interval=5,
+            verbosity_level=2,
             max_steps=20,
+            stream_outputs=True,
         )
 
         logger.info(
             f"Agent's available tools: {list(agent.tools.keys())}",
         )
 
-        prompt = f"""
-            You're an expert analyst. You make comprehensive reports after visiting
-            many websites. Don't hesitate to search for many queries at once in a for
-            loop. For each data point that you find, visit the source url to confirm
-            numbers.
+        messages = []
+        for step in agent.run(task, stream=True):
+            if isinstance(step, (smolagents.ActionStep, smolagents.PlanningStep)):
+                memory_step: smolagents.ActionStep | smolagents.PlanningStep = step
+                for message in memory_step.to_messages():
+                    role = "user" if message["role"] == "user" else "assistant"
+                    for content in message["content"]:
+                        if content["type"] == "text":
+                            metadata = {}
+                            if message["role"] == smolagents.MessageRole.TOOL_CALL:
+                                metadata = {"title": "🛠️ Tool call"}
+                            if message["role"] == smolagents.MessageRole.TOOL_RESPONSE:
+                                metadata = {"title": "➡️ Tool response"}
+                            if message["role"] == smolagents.MessageRole.SYSTEM:
+                                metadata = {"title": "️⚙️ System"}
+                            messages.append(
+                                gr.ChatMessage(
+                                    role=role,
+                                    content=content["text"],
+                                    metadata=metadata,
+                                ),
+                            )
+            if isinstance(step, smolagents.FinalAnswerStep):
+                messages.append(
+                    gr.ChatMessage(
+                        role="assistant",
+                        content=f"**Final answer:**\n{step.output}",
+                    ),
+                )
+            yield messages
 
-            {task}
-            """
-        return agent.run(prompt)
 
+with gr.Blocks() as app:
+    chatbot = gr.Chatbot(type="messages", height=700)
+    textbox = gr.Textbox(label="Task", value="")
+    submit = gr.Button("Submit")
+    submit.click(call_agent, inputs=textbox, outputs=chatbot)
 
-app = gr.Interface(fn=call_agent, inputs="text", outputs="text")
 app.launch(share=False)
