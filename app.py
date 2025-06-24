@@ -3,6 +3,7 @@
 import os
 
 import gradio as gr
+import smolagents
 from huggingface_hub import login
 from smolagents import (
     CodeAgent,
@@ -17,7 +18,7 @@ from src.models import get_model
 from src.tools import calculate_cargo_travel_time
 
 
-def call_agent(task: str) -> tuple[str, str]:
+def call_agent(task: str) -> list[gr.ChatMessage]:
     """Get the agent and call it with the prompt."""
     setup_langfuse()
 
@@ -58,22 +59,49 @@ def call_agent(task: str) -> tuple[str, str]:
             planning_interval=5,
             verbosity_level=2,
             max_steps=20,
+            stream_outputs=True,
         )
 
         logger.info(
             f"Agent's available tools: {list(agent.tools.keys())}",
         )
 
-        prompt = f"""
-            You're an expert analyst. You make comprehensive reports after visiting
-            many websites. Don't hesitate to search for many queries at once in a for
-            loop. For each data point that you find, visit the source url to confirm
-            numbers.
+        messages = []
+        for step in agent.run(task, stream=True):
+            if isinstance(step, (smolagents.ActionStep, smolagents.PlanningStep)):
+                memory_step: smolagents.ActionStep | smolagents.PlanningStep = step
+                for message in memory_step.to_messages():
+                    role = "user" if message["role"] == "user" else "assistant"
+                    for content in message["content"]:
+                        if content["type"] == "text":
+                            metadata = {}
+                            if message["role"] == smolagents.MessageRole.TOOL_CALL:
+                                metadata = {"title": "🛠️ Tool call"}
+                            if message["role"] == smolagents.MessageRole.TOOL_RESPONSE:
+                                metadata = {"title": "➡️ Tool response"}
+                            if message["role"] == smolagents.MessageRole.SYSTEM:
+                                metadata = {"title": "️⚙️ System"}
+                            messages.append(
+                                gr.ChatMessage(
+                                    role=role,
+                                    content=content["text"],
+                                    metadata=metadata,
+                                ),
+                            )
+            if isinstance(step, smolagents.FinalAnswerStep):
+                messages.append(
+                    gr.ChatMessage(
+                        role="assistant",
+                        content=f"**Final answer:**\n{step.output}",
+                    ),
+                )
+            yield messages
 
-            {task}
-            """
-        return agent.run(prompt)
 
+with gr.Blocks() as app:
+    chatbot = gr.Chatbot(type="messages", height=700)
+    textbox = gr.Textbox(label="Task", value="")
+    submit = gr.Button("Submit")
+    submit.click(call_agent, inputs=textbox, outputs=chatbot)
 
-app = gr.Interface(fn=call_agent, inputs="text", outputs="text")
 app.launch(share=False)
