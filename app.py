@@ -18,7 +18,7 @@ from src.models import get_model
 from src.tools import calculate_cargo_travel_time
 
 
-def call_agent(task: str) -> list[gr.ChatMessage]:
+def call_agent(task: str) -> list[gr.ChatMessage]:  # type: ignore  # noqa: PGH003
     """Get the agent and call it with the prompt."""
     setup_langfuse()
 

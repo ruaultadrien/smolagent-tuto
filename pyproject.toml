@@ -30,6 +30,9 @@ mcp = "^1.9.4"
 plotly = "^6.1.2"
 geopandas = "^1.1.0"
 kaleido = "^1.0.0"
+ipykernel = "^6.29.5"
+helium = "^5.1.1"
+selenium = "^4.34.2"
 
 
 [tool.poetry.group.dev.dependencies]
