@@ -2,45 +2,39 @@
 name = "smolagent-tuto"
 version = "0.1.0"
 description = "Agent tutorial"
-email = "ruaultadrien@gmail.com"
-readme = "README.md"
+authors = [{ name = "Adrien", email = "ruaultadrien@gmail.com" }]
 requires-python = ">=3.10,<3.14"
-
-[tool.poetry]
-name = "smolagent-tuto"
-version = "0.1.0"
-description = "Agent tutorial"
-authors = ["Adrien <ruaultadrien@gmail.com>"]
 readme = "README.md"
-package-mode = false
+dependencies = [
+    "smolagents[litellm, mcp, toolkit]>=1.18.0,<2",
+    "duckduckgo-search>=8.0.2,<9",
+    "gradio>=5.31.0,<6",
+    "opentelemetry-sdk>=1.33.1,<2",
+    "opentelemetry-exporter-otlp>=1.33.1,<2",
+    "openinference-instrumentation-smolagents>=0.1.12,<0.2",
+    "ruff>=0.12.0,<0.13",
+    "langchain>=0.3.25,<0.4",
+    "langchain-community>=0.3.25,<0.4",
+    "google-search-results>=2.4.2,<3",
+    "mcp>=1.9.4,<2",
+    "plotly>=6.1.2,<7",
+    "geopandas",
+    "kaleido>=1.0.0,<2",
+    "ipykernel>=6.29.5,<7",
+    "helium>=5.1.1,<6",
+    "selenium>=4.34.2,<5",
+]
+email = "ruaultadrien@gmail.com"
 
-[tool.poetry.dependencies]
-python = ">=3.10,<3.14"
-smolagents = {extras = ["litellm", "mcp", "toolkit"], version = "^1.18.0"}
-duckduckgo-search = "^8.0.2"
-gradio = "^5.31.0"
-opentelemetry-sdk = "^1.33.1"
-opentelemetry-exporter-otlp = "^1.33.1"
-openinference-instrumentation-smolagents = "^0.1.12"
-ruff = "^0.12.0"
-langchain = "^0.3.25"
-langchain-community = "^0.3.25"
-google-search-results = "^2.4.2"
-mcp = "^1.9.4"
-plotly = "^6.1.2"
-geopandas = "^1.1.0"
-kaleido = "^1.0.0"
-ipykernel = "^6.29.5"
-helium = "^5.1.1"
-selenium = "^4.34.2"
+[dependency-groups]
+dev = ["pre-commit>=4.2.0,<5"]
 
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "^4.2.0"
+[tool.uv]
+package = false
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [tool.ruff.lint]
 select = ["ALL"]

@@ -6,13 +6,10 @@ repos:
     #       args: ["-f", "requirements.txt", "-o", "requirements.txt"]
     #       verbose: true
 
-    - repo: local
+    - repo: https://github.com/astral-sh/uv-pre-commit
+      rev: 0.8.0
       hooks:
-        - id: poetry-requirements-export
-          name: Poetry requirements export
-          entry: bash -c "poetry export -f requirements.txt -o requirements.txt"
-          language: system
-    
+        - id: uv-export
 
     - repo: https://github.com/astral-sh/ruff-pre-commit
       rev: v0.12.0
